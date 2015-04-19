@@ -1,0 +1,16 @@
+Django==1.6.5
+Pillow==2.6.1
+argparse==1.2.1
+django-crispy-forms==1.4.0
+django-extensions==1.4.9
+django-leaflet==0.15.0
+psycopg2==2.5.4
+pydot==1.0.2
+pygraphviz==1.2
+pyparsing==1.5.7
+pytz==2014.7
+six==1.8.0
+wsgiref==0.1.2
+
+#gunicorn>=18.0
+#South>=0.8.4

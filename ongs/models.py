@@ -13,7 +13,7 @@ class organisme(models.Model):
     nom = models.CharField(max_length=40)
     description = models.TextField(null=True)
     logo = models.ImageField(upload_to="media/logo/%Y/%m", null=True)
-    status = models.OneToOneField('status', verbose_name="status") # Un "status" peut qualifier un "organisme" et un "organisme" ne peut avoir qu'un statut"  => OneToOneField ## la class status n'est pas encore défini, j'utilise donc le nom du modeleÃ  la place de l'objet model lui-mÃme
+    status = models.ForeignKey('status', verbose_name="status") # Un "status" peut qualifier plrs "organisme" et un "organisme" ne peut avoir qu'un statut"  => Pas OneToOneField ni "OneToManyField" qui n'existe pas en Django mais ForeignKey## la class status n'est pas encore défini, j'utilise donc le nom du modeleÃ  la place de l'objet model lui-mÃme
     referent = models.ForeignKey('self', blank=True, null=True)
 
     # Ainsi le model est correctement definit dans admin.
@@ -77,7 +77,7 @@ class action(models.Model):
     date = models.DateTimeField("Date de démarrage", auto_now_add=False, auto_now=False)
     duree = models.CharField(max_length=40)
     description = models.TextField(null=True)
-    region = models.OneToOneField('mdgRegion', verbose_name="région") # Ici "OneToOneField" précise qu'une "action" ne se déroule que dans une région.
+    region = models.OneToOneField('mdgRegion', verbose_name="région") # !! à changer !! Devrait etre définit automatiquement par rapport aux coordonnées du lieu
     localisation = models.CharField(max_length=50)
     illustration = models.ImageField(upload_to="media/illustration/%Y/%m", null=True)
     responsable = models.ForeignKey(utilisateur, limit_choices_to={'is_responsable': True}, verbose_name="nom du responsable de la fiche")
@@ -86,6 +86,9 @@ class action(models.Model):
     categories = models.ManyToManyField('categorie', verbose_name="catégorie") # Un ou plrs "catégories" peut qualifier une "action" et une "action" peut agir dans un ou plrs "catégories"  => ManyToManyField
     creation = models.DateTimeField("Date de création fiche", auto_now_add=True, auto_now=True)
     maj = models.DateTimeField("Date de mise à jour fiche", auto_now_add=True, auto_now=True)
+    geom = gismodels.GeometryField(srid=4326)
+
+    objects = gismodels.GeoManager()
      
     class Meta:
         verbose_name = "action"
@@ -180,7 +183,7 @@ class mdgRegion(gismodels.Model):
         verbose_name_plural = "Régions"
 
     def __unicode__(self):
-        return u"RÃgion: %s" % self.region
+        return u"Région: %s" % self.region
 
 class mdgDistrict(gismodels.Model):
     id_faritan = models.IntegerField()
